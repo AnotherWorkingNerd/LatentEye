@@ -1,8 +1,8 @@
-# ---
+---
 # name: "\U0001F680 Feature Request"
 # # about: "I have an idea (and may want to implement it \U0001F642)!"
 # # title: ''
-labels: "enhancement, needs triage"
+#labels: "enhancement, needs triage"
 
 Thanks for taking the time to share your vision for a LatentEye new feature.
 
