@@ -1,0 +1,15 @@
+#
+# Package Requirements for LatentEye
+#
+
+pip >= 24.3
+# make sure we have wheel since PyQt released as a wheel.
+setuptools >= 75.3
+
+# stuff for PyQT6 - see: https://www.riverbankcomputing.com/software/pyqt/
+# and https://www.riverbankcomputing.com/static/Docs/PyQt6/
+PyQt6 >= 6.8
+
+# Supports reading metadata from images generated with stable diffusion apps
+# on pypi at https://pypi.org/project/sd-prompt-reader/
+sd-prompt-reader >= 1.3.5
