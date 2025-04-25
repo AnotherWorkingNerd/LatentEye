@@ -39,7 +39,7 @@ Right now it works pretty well on MacOS and it works on Linux but has performanc
 
 ## Requirements:
 - Python versions: 3.12.3 or later is required due to StringEnums being used.
-- PyQt6 see: [Installing PyQt6](https://www.riverbankcomputing.com/static/Docs/PyQt6/installation.html)
+- PyQt6 
 
 In order to use LatentEye you need to have python3.12 or later on your system. If you don't have it installed instructions are provided in [Python3 installation ](./install_python.md)
 
@@ -99,7 +99,7 @@ Now were ready to actually install LatentEye. Just follow along with the steps b
    pip install -r requirements.txt
    ```
    This will make sure that pip and the python setuptools are at the level needed then install:
-   - PyQt version 6.8 or latest version. See [Riverbank Computing](https://www.riverbankcomputing.com) or [PyQt6 Reference Guide](https://www.riverbankcomputing.com/static/Docs/PyQt6/)
+   - PyQt version 6.8 or latest version. See [Riverbank Computing](https://www.riverbankcomputing.com) or [PyQt6 Reference Guide](https://www.riverbankcomputing.com/static/Docs/PyQt6/) or [Installing PyQt6](https://www.riverbankcomputing.com/static/Docs/PyQt6/installation.html)
    - sd-prompt-reader - This gives LatentEye its vision. for more info see [sd-prompt-reader](https://pypi.org/project/sd-prompt-reader/).
 
 1. **Open LatentEye**
