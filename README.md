@@ -1,18 +1,18 @@
 # LatentEye
 
-![logo](./assets/logo256.png)
-
-<!-- <img alt="icon" src="https://github.com/receyuki/stable-diffusion-prompt-reader/raw/master/sd_prompt_reader/resources/icon-cube.png" width=20% height=20%>
--->
+<!-- ![logo](./assets/logo256.png) -->
+<div style="text-align: center;">
+   <img alt="icon" src="./assets/logo256.png">
+</div>
 
 ## The eye that sees into generative art.
 
 ## Introduction:
 LatentEye allows you to visually explore local AI-generated images and uncover their hidden metadata. This user-friendly desktop app offers features for viewing, managing metadata, and clipboard operations. Primarily for ComfyUI and Stable Diffusion images but view any of the supported file types.
 
-My interest in AI image generation began with [Automatic 1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui), followed by a discovery of the amazing [ComfyUI](https://www.comfy.org). In the process of creating images, I struggled to find an image viewer that displayed my creations along with the metadata in a way I liked. This led me to create LatentEye, initially it is designed for ComfyUI and Stable Diffusion based tools, support additional apps may be added in the future
+My interest in AI image generation began with [Automatic 1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui), followed by a discovery of the amazing [ComfyUI](https://www.comfy.org). In the process of creating images, I struggled to find an image viewer that displayed my creations along with the metadata in a way I liked. This led me to create LatentEye, initially it is designed for ComfyUI and Stable Diffusion based tools, support additional apps may be added in the future.
 
-Prior to LatentEye, I had no knowledge of PyQt 6, so this project serves as my opportunity to learn it and many other diffuse and pythonic things along the way. This is a way for an old nerd to try and remain relevant. The name is a play on [Latent Space](https://www.ibm.com/think/topics/latent-space) and [Latent Image](https://comfyui-wiki.com/en/comfyui-nodes/latent/empty-latent-image). For the mathematicians or Generative AI developers, you might find this interesting: [Complexity Matters: Rethinking the Latent Space for Generative Modeling](https://arxiv.org/pdf/2307.08283). Just for the record, I'm not either and 99% of that paper I didn't understand. whoo hoo I'm a 1%er!?!? LOL.
+Prior to LatentEye, I had no knowledge of PyQt 6, so this project serves as my opportunity to learn it and many other diffuse and pythonic things along the way. This is a way for an old nerd to try and remain relevant. The name is a play on [Latent Space](https://www.ibm.com/think/topics/latent-space) and [Latent Image](https://comfyui-wiki.com/en/comfyui-nodes/latent/empty-latent-image). For the mathematicians or Generative AI developers, you might find this interesting: [Complexity Matters: Rethinking the Latent Space for Generative Modeling](https://arxiv.org/pdf/2307.08283). Just for the record, I'm not neither and 99% of that paper I didn't understand. whoo hoo I'm a 1%er!?!? LOL.
 
 LatentEye was designed, developed a Mac and and tested on MacOS and Linux. It is expected to run on Windows and maybe other platforms supported by Qt. I primarily only use Windows for playing [GuildWars 2](https://www.guildwars2.com) and a few other Steam games, so my testing on Windows has been very light.
 
@@ -31,7 +31,7 @@ Here are a few more [screenshots](./docs/screenshots.md) if interested.
 - Dark mode
 
 ## Early Release Notice
-LatentEys is finally at a stage where I feel other people can use it. Most of LatentEye works however you must absolutely expect some things to not work. The known issues are covered in [KnownIssues](./docs/known_issues.md)
+LatentEye is finally at a stage where I feel other people can use it. Most of LatentEye works however you must absolutely expect some things to not work. The known issues are covered in [KnownIssues](./docs/known_issues.md)
 
 Right now it works pretty well on MacOS and it works on Linux but has performance issues. Windows is untested.
 
@@ -39,7 +39,7 @@ Right now it works pretty well on MacOS and it works on Linux but has performanc
 
 ## Requirements:
 - Python versions: 3.12.3 or later is required due to StringEnums being used.
-- PyQt6 
+- PyQt6 see: [Installing PyQt6](https://www.riverbankcomputing.com/static/Docs/PyQt6/installation.html)
 
 In order to use LatentEye you need to have python3.12 or later on your system. If you don't have it installed instructions are provided in [Python3 installation ](./install_python.md)
 
@@ -99,7 +99,7 @@ Now were ready to actually install LatentEye. Just follow along with the steps b
    pip install -r requirements.txt
    ```
    This will make sure that pip and the python setuptools are at the level needed then install:
-   - PyQt version 6.8 or latest version. See [Riverbank Computing](https://www.riverbankcomputing.com) or [PyQt6 Reference Guide](https://www.riverbankcomputing.com/static/Docs/PyQt6/) or [Installing PyQt6](https://www.riverbankcomputing.com/static/Docs/PyQt6/installation.html)
+   - PyQt version 6.8 or latest version. See [Riverbank Computing](https://www.riverbankcomputing.com) or [PyQt6 Reference Guide](https://www.riverbankcomputing.com/static/Docs/PyQt6/)
    - sd-prompt-reader - This gives LatentEye its vision. for more info see [sd-prompt-reader](https://pypi.org/project/sd-prompt-reader/).
 
 1. **Open LatentEye**
