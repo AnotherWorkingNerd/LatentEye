@@ -1,9 +1,15 @@
 # LatentEye
 
 <!-- ![logo](./assets/logo256.png) -->
+
+<!-- ok so github doesn't really like css or div 
 <div style="text-align: center;">
    <img alt="icon" src="./assets/logo256.png">
 </div>
+ -->
+<p align="center" width="100%">
+    <img alt="LatentEye icon" src="./assets/logo256.png">
+</p>
 
 ## The eye that sees into generative art.
 
