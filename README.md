@@ -1,15 +1,13 @@
 # LatentEye
 
 <!-- ![logo](./assets/logo256.png) -->
-
-<!-- ok so github doesn't really like css or div 
+<!-- ok so github doesn't really like css or div
 <div style="text-align: center;">
    <img alt="icon" src="./assets/logo256.png">
 </div>
  -->
 <p align="center" width="100%">
     <img alt="LatentEye icon" src="./assets/logo256.png">
-
 
 ## The eye that sees into generative art.
 </p>
@@ -24,6 +22,7 @@ Prior to LatentEye, I had no knowledge of PyQt 6, so this project serves as my o
 LatentEye was designed, developed a Mac and and tested on MacOS and Linux. It is expected to run on Windows and maybe other platforms supported by Qt. I primarily only use Windows for playing [GuildWars 2](https://www.guildwars2.com) and a few other Steam games, so my testing on Windows has been very light.
 
 ![mainwin](./docs/images/main_window.png)
+
 Here are a few more [screenshots](./docs/screenshots.md) if interested.
 
 ## Features:
@@ -37,10 +36,14 @@ Here are a few more [screenshots](./docs/screenshots.md) if interested.
 - Cross Platform by using PyQt6. Runs on Linux, macOS, and Windows.
 - Dark mode
 
-## Early Release Notice
-LatentEye is finally at a stage where I feel other people can use it. Most of LatentEye works however you must absolutely expect some things to not work. The known issues are covered in [KnownIssues](./docs/known_issues.md)
+## 0.2.0 Release Notice
+This release is a significant improvement of LatentEye. The Summary is below and the [CHANGELOG](./CHANGELOG.md) provides all the details.
+- improved speed for thumbnails with progress bar.
+- Thumbnail sorting. defaults to sort by name.
+- EyeSight: all tool bar buttons functional. Zoom and zoom reset works.
+- Added Thumbnail refresh. if new files get added to the directory you're looking at, hit refresh.
 
-Right now it works pretty well on MacOS and it works on Linux but may have some performance issues. On Windows it ran.
+Some things may still have issues. The [KnownIssues](./docs/known_issues.md) have been updated.
 
 # Installation
 
@@ -114,7 +117,7 @@ Now were ready to actually install LatentEye. Just follow along with the steps b
    ```
    python LatentEye.py
    ```
-   You can also lauch LatentEye using different Qt styles. The names are:
+   You can also launch LatentEye using different Qt styles. The names are:
     - Fusion
     - macOS
     - Windows
@@ -142,7 +145,7 @@ The testing was constrained by the resources at hand. It was tested across multi
 Since this is a one man operation, contributions are always welcome!
 Contributions in any form are encouraged so of the ways you can do this with little effort on your part:
 - Star this repo.
-- Spread the word about LatentEye by recommendeding it to others.
+- Spread the word about LatentEye by recommending it to others.
 - Your feedback about features you'd like to see or bugs reports, please provide detailed feedback here on GitHub.
 
 Contributions requiring a bit more effort on your part:
@@ -150,33 +153,32 @@ Contributions requiring a bit more effort on your part:
 - If you have something in mind that you would like to work on, please open a discussion issue first to discuss any implementation details to avoid duplicating efforts then open a PR when you feel that it is ready.
 - Improving documentation, if you see typo's, bad grammer, or docs that can be improved please file an issue and let me know the details.
 
-I had forgotten how much non-coding work went into setting up a public repo. Your involvment and support helps keep me motivated.
+I had forgotten how much non-coding work went into setting up a public repo. Your involvement and support helps keep me motivated.
 
 ## LatentEye's vision for the future.
 
 First on the list is, of course, getting LatentEye feature complete that means everything operates as I planned, intended, or expected. Here are some of the things that I'm working on now:
-- EyeSight improvement - zoom, image sizing and other issues are taken care of. Maybe eating more carrots. :-)
-- Better file handling including file rename, file delete, maybe file move and copy
-- Fix plaform specific issues like Linux font sizes, etc.
-- Lots of internal improvements with the code.
-- Improve fileIO speed on Linux or at least progress indicators.
-- Testing on Windows.
-- Rewriting or fixing any typos or mistakes in the ~~diments~~ documents I've written.
 
-My vision for future versions, This list is incomplete, presented in random order, and **not** prioritized:
-- Render ComfyUI workflows. I don't know how much work this is.
+Updated June 2025:
+- file handling including file rename, file move, file delete, maybe and copy
+- EyeSight improvement - image sizing and other minor issues. Maybe eating still more carrots. :-)
+- Fix platform specific issues like Linux font sizes, etc.
+- Still Lots of internal improvements with the code.
+- Testing on Windows.
+- Rewriting or fixing any typos or mistakes in the ~~diments~~ documents I've written. I think I've got most of them.
+
+My vision for future versions, This list is just the high level items, presented in random order, and **not** prioritized:
+- Improve the UI / UX
 - App save settings, like window locations and last used path.
-- User setting. make things as configurable as possible. colors, fonts, file formats, etc.
 - Media playback. videos and music
+- Render ComfyUI workflows. I don't know how much work this is. lots of JSON
+- User setting. make things as configurable as possible. colors, fonts, file formats, etc.
+- Lots of coding improvements that would be completely unseen. This could cover all areas of LatentEye
 - Creating an installer and maybe executables.
-- Improve the UI / UX 
-- Lots of coding improvements that would be completely unseen. This could cover all areas of LetentEye
 - Adjustable font and font size for the file tree and different icons
 - status bar
 
-My actual TODO list is much longer.
-
-### Stuff LatentEye doesn't do and may never do.
+### Stuff LatentEye doesn't do and probably will never do.
 - Image editing. Image editing is a specialized task. This is a viewer, and there are many excellent image editing tools available. I won't recommend a specific one, as your requirements may differ from those of others.
 - Editing of the metadata. In a future version, will be the ability to clear image metadata, but this feature will focus solely on clearing, not editing.
 - EXIF data. - That's the realm of photography not Generative AI and doesn't align LatentEye's vision. It could be added someday, but it's unlikely.
@@ -189,7 +191,7 @@ Of course this list is subject to change but the first and last ones are very un
 This is planned for a version at some future time and will take quite a bit of refactoring of the existing code to facilitate Localization.
 
 ## THANKS!
-_MANY_ Thanks got out to the following. Without them, LatentEye's would have never been opened.
+_MANY_ Thanks go out to the following. Without them, LatentEye's would have never been opened.
 - [Rhys Yang](https://pypi.org/user/receyuki/) for [sd-prompt-reader](https://pypi.org/project/sd-prompt-reader/).
 - Riverbank Computing Limited and Phil Thompson for [PyQt6](https://www.riverbankcomputing.com/static/Docs/PyQt6/) - [https://www.riverbankcomputing.com](https://www.riverbankcomputing.com).
 - The icons used in LatentEye came from [SVGRepo](https://www.svgrepo.com).
@@ -198,6 +200,7 @@ _MANY_ Thanks got out to the following. Without them, LatentEye's would have nev
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 The software includes third-party libraries that are subject to their own licenses and disclaimers.
 
+A mention would be nice, however. :-)
 ----
 #### Footnotes:
 

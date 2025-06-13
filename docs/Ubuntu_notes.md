@@ -6,9 +6,9 @@ Since this is an early release and I'm the lone developer with access limited to
 
 While this is mainly for Ubuntu it may so apply to other distro's as well but as of April 2025 I've only tested on Ubuntu 24.04 LTS.
 
-PyQt / Qt seem to be really slow on Ubuntu and possibly other Linux Distros. I searched for a possible cause or solution using mutiple methods. One of the comments I read about this issues said almost exactly "Thats Just The Way It Is" much as as I hate to say it unless someone knows a solution. That all I know. If anyone reading this knows a solution I'd love to hear it.
+PyQt / Qt seem to be really slow on Ubuntu and possibly other Linux Distros. I searched for a possible cause or solution using multiple methods. One of the comments I read about this issues said almost exactly "Thats Just The Way It Is" much as as I hate to say it unless someone knows a solution. That all I know. If anyone reading this knows a solution I'd love to hear it.
 
-<!-- this had mutiple problems and then didn't really have any effect.
+<!-- this had multiple problems and then didn't really have any effect.
  installing appmenu-registrar did not help and I can not find the package vala-panel-appmenu-common
 Need to incorporate:
   possible solution: `apt install appmenu-registrar vala-panel-appmenu-common`

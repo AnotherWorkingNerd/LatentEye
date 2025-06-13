@@ -9,9 +9,9 @@
 import logging
 from pathlib import Path
 
+from PyQt6.QtCore import Qt, QDir, pyqtSignal
 from PyQt6.QtWidgets import (QApplication, QComboBox, QLabel, QMainWindow,
-                             QMessageBox, QVBoxLayout, QSplitter, QWidget )
-from PyQt6.QtCore import Qt, QDir
+                             QMessageBox, QVBoxLayout, QSplitter, QWidget)
 from PyQt6.QtGui import QAction, QIcon, QKeySequence
 
 from .file_tree import FileTreeView
@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
     menu bar, toolbar, window splitters with file tree, Metadata view
     and center thumbnail view.
     """
-
+    sortMethodChanged = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -62,16 +62,16 @@ class MainWindow(QMainWindow):
         self.splitter.addWidget(self.thumbnail_view)
         self.splitter.addWidget(self.info_view)
 
-        # Optional: Set minimum sizes to prevent views from becoming too small
+        # Set minimum sizes to prevent views from becoming too small
         self.filetree_view.setMinimumWidth(50)
         self.thumbnail_view.setMinimumWidth(400)
         self.info_view.setMinimumWidth(120)
-
         main_layout.addWidget(self.splitter, stretch=1)
 
         # Connect file tree selection to updating the thumbnails
         self.filetree_view.directoryChosen.connect(self.get_selected_directory)
         self.thumbnail_view.thumbnail_selected.connect(self.get_thumbnail_metadata)
+        self.current_directory = ''         # used later by get_selected_directory and on_sort
         self.setCentralWidget(self.splitter)
         logger.debug('past setCentralWidget().')
 
@@ -80,6 +80,7 @@ class MainWindow(QMainWindow):
         Center the app window in center of the desktop of
         the current monitor.
         """
+
         # get the geometry of the Main Window
         app_frame = self.frameGeometry()
         # Then the reported screen resolution and the center point
@@ -99,13 +100,13 @@ class MainWindow(QMainWindow):
         quit_action.triggered.connect(self.close)
         file_menu.addAction(quit_action)
 
-    # TODO: FV - Need to add functionality to the Docs
         help_menu = menu_bar.addMenu('Help')
         docs_action = QAction('Docs', self)
         docs_action.setShortcut(QKeySequence.StandardKey.HelpContents)
         docs_action.triggered.connect(self.helpMe)
         help_menu.addAction(docs_action)
         help_menu.addSeparator()
+
         about_action = QAction('&About', self)
         about_action.triggered.connect(self.about_box)
         help_menu.addAction(about_action)
@@ -120,12 +121,17 @@ class MainWindow(QMainWindow):
         toolbar = self.addToolBar('Main Toolbar')
         toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonFollowStyle)
 
-        # Sorting dropdown - still a work in progress
+        # Button for refreshing the currently selected directory
+        refresh_thumbnails_action = QAction(QIcon('icon:refresh.svg'), 'Refresh Thumbnails', self)
+        refresh_thumbnails_action.triggered.connect(self.on_refresh_thumbnails)
+        toolbar.addAction(refresh_thumbnails_action)
+
+        # Sorting dropdown
         sort_lbl = QLabel('Sort: ')
         toolbar.addWidget(sort_lbl)
         self.sort_dropdown = QComboBox()
-        self.sort_dropdown.addItems(['Work in Progress', 'Default', 'Name', 'Creation Date', 'File Size'])
-        self.sort_dropdown.currentIndexChanged.connect(self.on_sort_changed)
+        self.sort_dropdown.addItems(['Name', 'Creation Date', 'File Size', 'Extension', 'Default (Unsorted)'])
+        self.sort_dropdown.activated.connect(self.on_sort_changed)
         toolbar.addWidget(self.sort_dropdown)
 
         # Buttons for toggling visibility of the side panels
@@ -139,7 +145,26 @@ class MainWindow(QMainWindow):
 
         # Display text labels with icons
         toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
-        logger.debug('exiting toobar')
+        logger.debug('exiting toolbar')
+
+    def on_refresh_thumbnails(self):
+        logger.debug('entering on_refresh_thumbnails()')
+        sort_method = self.sort_dropdown.currentText()
+        self.thumbnail_view.sort_image_files(self.current_directory, sort_method)
+
+    def on_sort_changed(self, index):
+        """handles sort combobox selection change."""
+        logger.debug('entering on_sort_changed()')
+
+        sort_method = self.sort_dropdown.itemText(index)   # get the text of the current index
+        curr_text = self.sort_dropdown.currentText()
+        curr_idx = self.sort_dropdown.currentIndex()
+        self.sortMethodChanged.connect(lambda: self.thumbnail_view.sort_image_files(self.current_directory, curr_text))
+        logger.debug(f"main:Sort method changed to: {sort_method}")
+        logger.debug(f"main:Sort method current text: {curr_text}")
+        logger.debug(f"main:Sort method Index: {curr_idx}")
+        self.sortMethodChanged.emit(sort_method)
+        logger.debug('exiting on_sort_changed()')
 
     def toggle_files_panel(self):
         """
@@ -166,11 +191,11 @@ class MainWindow(QMainWindow):
 
     def abuseMe(self):
         """ just a empty place holder for not implemented yet """
+        # also used as method to use for POC with menu and toolbar action testing.
         show_error_box("I'm working on it, don't be so <i>impatient<i>.")
 
     def helpMe(self):
         """ need professional help to get things straight """
-    # TODO: FV - complete the helpme function
         msg = 'Docs haven\'t been integrated here yetHowever they are available on' + \
                'Github at <a href="https://github.com/AnotherWorkingNerd/LatentEye" target="_blank">LatentEye Docs</a>'
         show_error_box(msg, 'info')
@@ -180,19 +205,22 @@ class MainWindow(QMainWindow):
         QMessageBox.about(self,'About LatentEye',
                           'LatentEye: Seeing the hidden metadata in AI generated images.<br><br> '
                           'In Latent Space only the AI hears the screams.<br><br>'
-                          'Thanks to <a href="https://www.svgrepo.com" target="_blank">SVG Repo</a> for the icons used in LatentEye.')
+                          'Thanks to <a href="https://www.svgrepo.com" target="_blank">SVG Repo</a> for the icons used in LatentEye.'
+                          f'<p style="font-size: small;">version {Settings.VERSION}</p>')
 
     def get_selected_directory(self, selected_dir):
         """
-        Based on directory selected in file tree, updates thumbnails
+        Based on directory selected in file tree, updates thumbnails.
         Args: string - path of the selected directory
         """
         logger.debug(f'get_selected_directory(): {selected_dir}')
         # Everything I read recommended doing it this way to prevent
         # the dropdown showing one thing and the FileTree another
         curr_dir = selected_dir
+        self.current_directory = selected_dir
+        curr_sort = self.sort_dropdown.currentText()
         logger.debug('get_selected_directory(): calling load_thumbnails')
-        self.thumbnail_view.load_thumbnails(curr_dir)
+        self.thumbnail_view.sort_image_files(self.current_directory, curr_sort)
 
     def get_thumbnail_metadata(self, selected_tn):
         """
@@ -201,37 +229,6 @@ class MainWindow(QMainWindow):
         """
         logger.debug(f'get_thumbnail_metadata(): {selected_tn}')
         self.info_view.show_metadata(selected_tn)
-
-    def on_sort_changed(self):
-        """
-        NEEDS WORK:
-        Get the selected sorting criterion
-        """
-        logger.debug('entering on_sort_changed()')
-        sort_by = self.sort_dropdown.currentText().lower().replace(' ', '_')
-        sorted_thumbnails = self.thumbnail_view.sort_thumbnails(self.thumbnail_view.current_thumbnails, sort_by)
-        self.thumbnail_view.load_thumbnails(sorted_thumbnails)
-        logger.debug('exiting')
-
-    def sort_thumbnails(self, criterion):
-        """
-        NEEDS WORK:
-        Sorts thumbnails by the given criterion.
-        """
-        logger.debug('sort_thumbnails')
-        image_paths = self.thumbnail_view.get_image_paths()
-
-        if criterion == 'name':
-            image_paths.sort()  # Sort alphabetically
-        elif criterion == 'creation date':
-            # image_paths.sort(key=lambda path: os.path.getctime(path))
-            # Well I honestly don't feel pathlib makes this easier to
-            # read... but gotta keep up with the times.
-            image_paths.sort(key=lambda path: Path(path).stat().st_ctime)
-        elif criterion == 'file size':
-            image_paths.sort(key=lambda path: Path(path).stat().st_size)
-        logger.debug('Sort_thumbnails() - thumbnail_view() call')
-        self.thumbnail_view.load_thumbnails(image_paths)
 
     def closeEvent(self, event):
         """

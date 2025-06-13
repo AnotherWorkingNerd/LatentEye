@@ -1,17 +1,22 @@
 # file tree view
 # This shows the directory tree with the user directory selected and the parents visible.
-# The goal is to look and feel __similar__ to a regualr file browser that would be found on
+# The goal is to look and feel __similar__ to a regular file browser that would be found on
 # all major platforms.
 # this should emit a a directory path to thumbnail_view.
 #
+#
+# this seems to talk about what I am trying to do here.
+# https://doc.qt.io/qtforpython-6/overviews/model-view-programming.html#using-views-with-an-existing-model
 
+
+# import os       # old habits die hard. maybe I'll switch to pathlib
 import sys
 import logging
 from pathlib import Path
 
-from PyQt6.QtWidgets import QTreeView, QVBoxLayout, QWidget, QLabel, QComboBox
-from PyQt6.QtGui import QFileSystemModel, QColor, QFont, QIcon
 from PyQt6.QtCore import Qt, QDir, QStorageInfo, pyqtSignal, QFileSystemWatcher
+from PyQt6.QtWidgets import QTreeView, QVBoxLayout, QWidget, QLabel, QComboBox, QMenu
+from PyQt6.QtGui import QFileSystemModel, QColor, QFont, QIcon,QAction, QContextMenuEvent
 
 # # Set up logging
 logger = logging.getLogger(__name__)
@@ -20,14 +25,14 @@ class CustomFileSystemModel(QFileSystemModel):
     """
     subclass QFileSystemModel and override its data() method to customize how the
     directories are displayed. Check if a directory contains any files that match the
-    name filters that are in place and change the color of the directory and change
-    the color of the icon and directory name.
+    name filters that are in place and change the color of the directory name and
+    directory icon.
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
         # Set the search path for icons
-        # imho, pathlib.Path doesn't make this path easier to read and it has to be wrappred in str.
+        # imho, pathlib.Path doesn't make this path easier to read and it has to be wrapped in str.
         # this allegedly is progress... smh.
         QDir.addSearchPath('icon', str(Path(__file__).parent.parent / 'assets/icons/darkModeIcons'))
 
@@ -51,7 +56,7 @@ class CustomFileSystemModel(QFileSystemModel):
 
             # By default, QFileSystemModel uses native icons
             # for directories and files. To override these, you must
-            # supply your own icons or use QIcon Objecta.
+            # supply your own icons or use QIcon Object.
             if role == Qt.ItemDataRole.DecorationRole:
                 if contains_matching_files:
                     return QIcon('icon:folder-green.svg')
@@ -77,7 +82,7 @@ class CustomFileSystemModel(QFileSystemModel):
 class FileTreeView(QWidget):
     """
     FileTreeView provides a tree view for browsing the file system. It includes
-    drive selection, directory expansion, and signals for the directory and/or 
+    drive selection, directory expansion, and signals for the directory and/or
     the file selected.
     """
     directoryChosen = pyqtSignal(str)
@@ -86,24 +91,24 @@ class FileTreeView(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        # Set up the file system model, and configure the UI.
-        # the UI components.
         logger.debug('Entering FileTreeView')
-
-        # Create a file system model that allow the entire FS.
-        # and and looks like something we are all used to.
+        # Set up the file system model, and configure the
+        # UI components. Create a file system model that
+        # allows the entire FS and and looks like something
+        # we are all used to.
         self.model = CustomFileSystemModel()
         self.model.setRootPath('')
         logger.debug('FileTreeView: Root path set to the filesystem root.')
 
-        # graphics filter might be a part of user settings.
+        # filter out anything but graphics files
         graphics_filters = ['*.png', '*.jpg', '*.jpeg', '*.webp']
         self.model.setNameFilters(graphics_filters)
         self.model.setNameFilterDisables(False)
 
-        # only show directories aka folders.
-        # or not. I'm not sure I that I like it.
-        self.model.setFilter( QDir.Filter.NoDotAndDotDot | QDir.Filter.AllEntries | QDir.Filter.AllDirs )
+        # only show directories.
+        # https://www.riverbankcomputing.com/static/Docs/PyQt6/api/qtcore/qdir.html#Filter
+        self.model.setFilter( QDir.Filter.NoDotAndDotDot | QDir.Filter.AllDirs)
+        # self.model.setFilter( QDir.Filter.NoDotAndDotDot | QDir.Filter.AllEntries | QDir.Filter.AllDirs )
         # self.model.setFilter(QDir.Filter.AllDirs | QDir.Filter.NoDotAndDotDot | QDir.Filter.AllEntries | QDir.Filter.System)
         logger.debug(f'FileTreeView: Applied graphics filters: {graphics_filters}')
         self.tree = QTreeView()
@@ -128,7 +133,7 @@ class FileTreeView(QWidget):
         self.tree.setColumnHidden(2, True)
         self.tree.setColumnHidden(3, True)
 
-        # slot in click event. why not just call it connect? maybe connect event?
+        # slot in click event. why not just call it connect? maybe connect events?
         # signal/slot only seems to be used in the Qt/PyQt Docs.
         self.tree.clicked.connect(self.onFileSelected)
 
@@ -136,6 +141,10 @@ class FileTreeView(QWidget):
         self.driveSelector = QComboBox()
         self.populateDrives()
         self.driveSelector.currentTextChanged.connect(self.changeDrive)
+
+        # Add a context menu - but this is still a WIP
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.showContextMenu)
 
         # The simple layout
         layout = QVBoxLayout(self)
@@ -147,11 +156,11 @@ class FileTreeView(QWidget):
     def populateDrives(self):
         """
         Populate the dropdown with available drives or volumes using QStorageInfo.
-        Exclude platform dependant system vcolumes or inaccesable storage.
+        Exclude platform dependant system volumes or inaccessible storage.
         """
         drives = []
-        # drives that I don't think should be shown
-        mac_verboten = {'TimeMachine', 'System','Libary'}
+        # drives that I don't think should be shown.
+        mac_verboten = {'TimeMachine', 'System','Library'}
         linux_verboten = {'proc', 'sys', 'run', 'etc', 'sbin', 'bin'}
         windows_verboten = {'$Recycle.Bin', 'System Volume Information'}
 
@@ -168,6 +177,7 @@ class FileTreeView(QWidget):
                     continue
 
             if sys.platform == 'linux':
+                # having a slash in front of every name is ugly.
                 noslash_name = volume_name[1:] if volume_name.startswith('/') else volume_name
                 if noslash_name in linux_verboten or root_path == '/':
                     continue
@@ -223,4 +233,20 @@ class FileTreeView(QWidget):
             logger.debug(f'onFileSelected(): directory selected: {fpname}')
             self.fileSelected.emit(None)
             self.directoryChosen.emit(fpname)
+
+    def showContextMenu(self, point):
+        logger.debug('FileTreeView.ShowContextMenu: Right click detected. ')
+        cmenu = QMenu(self)
+        meta_action = QAction("Delete File(s)", self)
+        meta_action.triggered.connect(self.deleteFiles)
+        cmenu.addAction(meta_action)
+        cmenu.exec(self.viewport().mapToGlobal(point))
+
+    def deleteFiles(self, filelist):
+        # pass in filelist of 1 or more files
+        # validate file existence and permissions
+        # loop through list of files and remove them
+        # refresh directory listing and thumbnails.
+        ...
+        # obviously this isn't done yet.
 #

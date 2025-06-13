@@ -7,12 +7,14 @@
 #
 # Greg W. Moore - Jan 2025
 
-
 import os
 import logging
 # from enum import Enum
 from enum import StrEnum
 from pathlib import Path
+
+# use configparser for user settings in yaml file? ini? json?
+# from configparser import ConfigParser
 
 from PyQt6.QtWidgets import (QApplication, QMessageBox, QWidget, QVBoxLayout, QHBoxLayout,
                              QDialog, QTableWidget,  QTableWidgetItem, QTextEdit,
@@ -25,11 +27,11 @@ logger = logging.getLogger(__name__)
 
 class Settings(StrEnum):
     APPNAME = 'LatentEye'
-    VERSION = '0.1.0'
+    VERSION = '0.2.0'
     AUTHOR = 'Greg W. Moore aka AnotherWorkingNerd'
-    CONTACT = 'email@example.com'
     HOMEPAGE = 'https://github.com/AnotherWorkingNerd/LatentEye'
     DOCS =  ' URL to docs' # maybe git web page with help and can tie it to F1/help
+
 
 # https://tsak.dev/posts/python-enum/ - the case for StrEnum in python 3.11
 class SamplerNames(StrEnum):
@@ -79,11 +81,14 @@ class SamplerNames(StrEnum):
     unipc = 'UniPC'
 
 def show_error_box(errormessage, severity=None):
-    logger.debug(f'show_error_box: errormessage: {errormessage} - severity: {severity} : {type(severity)}')
+    #
+    logger.debug(f'show_error_box: errormessage: {errormessage} - severity: {severity}')
 
     match severity:
         case 'critical':
             # set icon for crit
+            # msg_icon = str( Path(__file__).parent.parent / 'assets/icons/darkModeIcons/exclamation-mark-triangle.svg')
+            # print(f'msg_icon path: {msg_icon}')
             msg_icon = QMessageBox.Icon.Critical
         case 'warn':
             # set icon for warning
@@ -100,14 +105,13 @@ def show_error_box(errormessage, severity=None):
 
     mbox = QMessageBox()
     mbox.setIcon(msg_icon)
+    # mbox.setWindowTitle('Stuff Happened.')
     mbox.setText(errormessage)
     mbox.setStyleSheet("font-size = 16px; font-weight = bold;")  # make it look pretty
     mbox.adjustSize()
     mbox.exec()
 
-# TODO: FV - In the interest of DRY... lets see if I can get this to work here.
-# need to pass in a table and add imports.
-# this is used by PictureWindow and InfoView.
+# this is used by EyeSight and InfoView.
 # Renamed the method so as not to get confused.
 def clipboard_copy(self, tablename):
     # Copy the table's content to the clipboard.
@@ -116,7 +120,7 @@ def clipboard_copy(self, tablename):
 
     # if there isn't anything useful in the table, don't return anything.
     if tablename.rowCount() <= 3:
-        logger.debug('nothing to copy to clipboard. cilpboard set to None.')
+        logger.debug('nothing to copy to clipboard. clipboard set to None.')
         return clipboard.setText(None)
 
     content = []
@@ -130,17 +134,21 @@ def clipboard_copy(self, tablename):
     clipboard.setText("\n".join(content))
     logger.debug('Table content copied successfully')
 
-def ttip_color(fore, back='#404040'):
+def ttip_color(fore, back='#787878'):
     # set background and foreground colors for QToolTips
     """Returns a QSS stylesheet string for QToolTip
-       with the specified background and forground colors
+       with the specified background and foreground colors
        using either known color names or hex RGB values like
-       'white' or '#00246B'. border is set to `black 1px` so TT shows.
-       forground color is required.
-       background color is optional. Default value: '#404040'
+       'white', 'darkkhaki' or '#00246B'. The border is set
+       to `black 1px` so TT shows. Without a border, No TT.
+       foreground color is required.
+       background color is optional. Default value: '#787878'
        usage:
+            label.setStyleSheet(ttip_color('#FAFAFA'))
+            label.setStyleSheet(ttip_color('#DECADE','#FABCAD'))
+            ttip_color('#FACADE')
     """
-    # #404040 - nice dark grey
+
     return f"""
         QToolTip {{
             background-color: {back};
@@ -153,4 +161,20 @@ def ttip_color(fore, back='#404040'):
 
 def read_user_config(self) :
     ...
-    # FV - configparser setup for user settings.
+    # WIP configparser setup for user settings.
+
+class Style:
+    """ A collection of QSS stylesheet strings that are used by LatentEye."""
+
+    # Qss for QProgressBar:
+    PROGRESSBAR_QSS = f"""
+        QProgressBar {{
+            border: 2px solid grey;
+            border-radius: 5px;
+            text-align: center;
+        }}
+        QProgressBar::chunk {{
+            background-color: #05B8CC;
+            width: 20px;
+        }}
+"""

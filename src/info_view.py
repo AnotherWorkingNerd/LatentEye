@@ -11,12 +11,16 @@
 # Most likely this will be for the Comfy workflows but who
 # knows what else.
 #
+#
 
+# import os
 import logging
 from pathlib import Path
 
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QDialog, QTableWidget,  QTableWidgetItem, QTextEdit, QPushButton, QMessageBox
 from PyQt6.QtCore import Qt, QDir, QSize
+from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout, QDialog,
+                             QTableWidget,  QTableWidgetItem, QTextEdit, QPushButton,
+                             QMessageBox)
 from PyQt6.QtGui import QIcon
 
 from .metadatatable import MetadataTable
@@ -60,7 +64,7 @@ class InfoView(QWidget):
         self.copy_btn.clicked.connect(self.copy_to_clipboard)
 
         self.wf_show = QPushButton(icon=QIcon('icon:workflow-eye.svg'), text='Show Workflow', parent=self)
-        self.wf_show.setEnabled(False)        # until its working - disable it.
+        self.wf_show.setEnabled(False)        # until its the workflow code is working - disable it.
         self.wf_show.setToolTip('Still a work in Progress.')
         self.wf_show.setIconSize(QSize(30, 30))
         self.wf_show.resize(self.copy_btn.sizeHint())
@@ -77,13 +81,14 @@ class InfoView(QWidget):
         Copies the content of the metadata table to the clipboard.
         If the table has no meaningful data, it sets the clipboard content to None.
         """
-
         # Copy the table's content to the clipboard.
+    # TODO: consolidate all these clipboard functions in latent_tools.py
+
         logger.debug('Copying table content to clipboard')
         clipboard = QApplication.clipboard()
 
         if self.md_table.rowCount() <= 3:
-            logger.debug('nothing to copy to clipboard. cilpboard set to None.')
+            logger.debug('nothing to copy to clipboard. clipboard set to None.')
             return clipboard.setText(None)
 
         content = []
@@ -107,7 +112,7 @@ class InfoView(QWidget):
                     Defaults to 300.
         """
         # get the metadata table info
-        # it seems that all the programatic ways to get the available
+        # it seems that all the programmatic ways to get the available
         # width for a column, make the data column too wide. at least
         # the ways I tried. So it's hard coded. C'est La PyQt
         self.picture_path = image_path
@@ -120,6 +125,7 @@ class InfoView(QWidget):
             self.md_table.clearContents()
             logger.debug('show_metadata(): New Metadata Table populated')
             logger.debug(f'{new_mdtable.rowCount() } rows in metadata Table')
+            # col_width = 625
             new_mdtable.setWordWrap(True)
             new_mdtable.setColumnWidth(1, width)
             new_mdtable.resizeRowToContents(0)
@@ -139,21 +145,22 @@ class InfoView(QWidget):
             layout.addWidget(self.md_table)
             layout.update()
         else:
-            # need to return something no data?
             logger.debug('show_metadata(): (else) Metadata Table NOT populated')
             logger.warning('Metadata Table NOT populated. Possibly no info in image.')
 
             self.md_table.clearContents()
             self.md_table.setItem(0, 0,  QTableWidgetItem('No metadata '))
+            # msg = f'found in {os.path.basename(self.picture_path)}'
             msg = f'found in {Path(self.picture_path).name}'
             self.md_table.setItem(0, 1,  QTableWidgetItem(msg))
+            # self.md_table = self.no_data_table(self.picture_path)
             mtab.set_table_styling(self.md_table)
             layout.addWidget(self.md_table)
             layout.update()
 
     def show_metadata_error(self):
         """
-        Show an eerror when no metadata is found in the Image. 
+        Show an error when no metadata is found in the Image.
         only called by get_image_data()
         """
         # only shown if the image contains not Stable Diffusion metadata information
@@ -161,8 +168,6 @@ class InfoView(QWidget):
         mbox.setWindowIcon(QIcon('../assets/icons/Trash-Lines.svg'))
         mbox.setWindowTitle(Settings.APPNAME.value)
 
-        # add an error message to the messagebox along with an Ok button
-        # even if its not Ok. A DOH! button would be nice but too much work.
         mbox.setStyleSheet("font-size: 16px; font-weight: bold;")  # make it look pretty
         mbox.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
         mbox.setText('No image metadata.')
@@ -170,7 +175,7 @@ class InfoView(QWidget):
 
         ok_btn = mbox.addButton(QMessageBox.Ok)
         mbox.setDefaultButton(QMessageBox.Ok)
-        ok_btn.clicked.connect(self.accept)         # maybe QMessageBox.AcceptRole
+        ok_btn.clicked.connect(self.accept)
         mbox.exec()
 
     def show_comfyui_workflow(self, filepath):
@@ -179,11 +184,7 @@ class InfoView(QWidget):
         # show_comfyui_workflow() needs a lot of work
 
         logger.debug("show_comfyui_workflow(): Displaying ComfyUI workflow.")
-        # This shows a workflow but its all in Javascript.
-        # https://github.com/Ikari132/sd-image-info
-        # its generally the idea that I have for this.
         # maybe this is more complicated than I thought...
-        # https://thatspristine.com/2023/12/22/comfyui-workflow-graph-test/#
         workflow_data = self.get_current_workflow()  # Fetch workflow data
         if workflow_data:
             dialog = QDialog(self)

@@ -33,8 +33,8 @@ from PyQt6.QtWidgets import QLayout, QGridLayout, QSizePolicy, QWidget, QScrollA
 
 class FlowLayout(QLayout):
     """
-    A custom layout that arranges child widgets in a dynamically 
-    sized scrollable grid, reshaping the grid when the window is 
+    A custom layout that arranges child widgets in a dynamically
+    sized scrollable grid, reshaping the grid when the window is
     resized.
     """
 
@@ -87,6 +87,8 @@ class FlowLayout(QLayout):
 
     def setGeometry(self, rect):
         super(FlowLayout, self).setGeometry(rect)
+        # not sure if next line is needed.
+        # self.update()
         self.doLayout(rect, False)
 
     def sizeHint(self):
@@ -98,8 +100,6 @@ class FlowLayout(QLayout):
             size = size.expandedTo(item.minimumSize())
 
         margins = self.contentsMargins()
-        # Old: size += QSize(2 * self.contentsMargins().top(), 2 * self.contentsMargins().top())
-        # this is basically the same.
         margins.top()
         size += QSize(2 * margins.left(), 2 * margins.top())
         return size
@@ -108,6 +108,7 @@ class FlowLayout(QLayout):
         """
         Arranges the items in the layout within the rectangle.
         """
+        # Resetting row and column variables. (added if..else)
         if self._item_list:
             self.rows = 1
         else:
@@ -121,6 +122,9 @@ class FlowLayout(QLayout):
 
         for item in self._item_list:
             style = item.widget().style()
+
+            # I think the ControlType may need to be changed to something else
+            # like Label or maybe DefaultType or Frame.
             layout_spacing_x = spacing + style.layoutSpacing(
                 QSizePolicy.ControlType.PushButton,
                 QSizePolicy.ControlType.PushButton,
@@ -159,6 +163,7 @@ class ResizeScrollArea(QScrollArea):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        # logger.debug('In ResizeScrollArea')
 
     def resizeEvent(self, event):
         """ Handle resize event to update FlowLayout size within the scroll area. """

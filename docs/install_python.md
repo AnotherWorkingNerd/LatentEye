@@ -13,7 +13,7 @@ In order to use LatentEye you need to have python3.12 or later on your system. T
       ```
       if you want install a specific version of python using Homebrew use `brew install python@[version]` where [version] is the specific version you want. eg. `brew install python@3.12` or `brew install python@3.13`
 
-   if you want to take the road less taveled without a brew, Python install instructions be found on Python.org at [Using Python on macOS](https://docs.python.org/3/using/mac.html). Select a version 3.12 or later.
+   if you want to take the road less traveled without a brew, Python install instructions be found on Python.org at [Using Python on macOS](https://docs.python.org/3/using/mac.html). Select a version 3.12 or later.
 
 ## Linux
    For all Linux distros, to determine what version of python you have installed use:

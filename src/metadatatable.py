@@ -10,25 +10,14 @@ import logging
 from pathlib import Path
 from collections import Counter
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QWidget, QHeaderView
 from PyQt6.QtGui import QFont
-from PyQt6.QtCore import Qt
 
-# The options are...
-# https://pypi.org/project/sd-prompt-reader/
-# https://github.com/receyuki/stable-diffusion-prompt-reader
-# from sd_parsers import ParserManager
-# does this work better? I think so.. YMMV
 from sd_prompt_reader.image_data_reader import ImageDataReader
 from .latent_tools import SamplerNames, show_error_box
 
-# Sources for sampler names:
-# https://comfy.icu/node/XY-Input-Sampler-Scheduler
-# https://civitai.com/articles/7484/understanding-stable-diffusion-samplers-beyond-image-comparisons
-# https://tensor.art/articles/806479083325275863
-# https://stable-diffusion-art.com/samplers/
-# https://easywithai.com/guide/stable-diffusion-best-sampler-comparison/
-
+# TODO: Convert to using latent_tools StringEnum
 # actual human readable sampler names
 SAMPLERS_NAMES = {
     'ddim': 'DDIM',
@@ -83,7 +72,7 @@ SAMPLERS_NAMES = {
 logger = logging.getLogger(__name__)
 
 class MetadataTable(QWidget):
-    """ 
+    """
     Pulls the Stable Diffusion metadata out of an image
     and creates a Styled QTableWidget from the data
     """
@@ -103,11 +92,9 @@ class MetadataTable(QWidget):
         """
         logger.debug('entering table_styling()')
         # Define fonts and colors. Eventually this should make its way to Settings.
-        # so I think I'll just call this default styling. Since a QTableWidget
-        # is being returned. It can be "restyled", right?
 
         fontsize = 15
-        fontname = 'Arial'              # yea, its boring but its on every platform.
+        fontname = 'Arial'                # yea, its boring but its on every platform.
         background_color = "#5A5A5A"    # light blue
         alternate_color = "#00246B"     # dark blue
         header_color = "#0B2E40"        # dark indigo
@@ -135,7 +122,7 @@ class MetadataTable(QWidget):
         Populate the table with metadata key-value pairs.
         Args: dict containing SD metadata.
         """
-        logger.debug('entering populate_tabel()')
+        logger.debug('entering populate_table()')
         if self.valid_md:
             logger.debug('populating table')
             self.table.setRowCount(len(metadata.keys()))
@@ -148,16 +135,14 @@ class MetadataTable(QWidget):
                     self.table.item(row, 1).setFlags(Qt.ItemFlag.ItemIsEnabled)
                     self.table.item(row, 1).setFlags(self.table.item(row, 1).flags() | Qt.ItemFlag.ItemIsSelectable)
                     # interesting... if the string is 151 chars, the next line works fine but if the line is, say, 371 chars
-                    # it doesn't work properly and appers to set the row size to about double the height of a regular row.
+                    # it doesn't work properly and appears to set the row size to about double the height of a regular row.
                     # I wonder why and where the cut off is. Does column width matter?
-                    # self.table.resizeRowToContents(row)
-                    # now there is also the plural: self.table.resizeRowsToContents()
 
     def get_metadata_table(self, image_path):
         """
         this takes care of:
         - getting the image metadata
-        - creating and styline the a QTableWidget
+        - creating and styling the a QTableWidget
         - populating new table with the obtained metadata
 
         Returns False if no metadata is found in the image and of course no table
@@ -165,6 +150,8 @@ class MetadataTable(QWidget):
         """
         # Get the info from the image
         if image_path:
+            # message something to the effect that the perms issue or something else
+            # and cant access file at image_path
             self.metadata = self.get_image_metadata(image_path)
         else:
             logger.debug('get_metadata_table(): image_path is null or not set.')
@@ -178,7 +165,7 @@ class MetadataTable(QWidget):
             self.table.setHorizontalHeaderLabels(['Image Info', 'Value'])
             # set a style as defined in table_styling()
             self.set_table_styling(self.table)
-            # populate the metadata gleened from the image into the table
+            # populate the metadata gleaned from the image into the table
             self.populate_table(self.metadata)
             logger.debug('get_metadata_table(): returning styled and populated table')
             return self.table
@@ -196,13 +183,13 @@ class MetadataTable(QWidget):
         returns: A styled table with a single row indicating no metadata.
         """
         # ensure the table is styled and no ellipsis for the text.
-        # Why? becase the the table was being updates and only the
+        # Why? because the the table was being updates and only the
         # first row was changing and the rest of the many rows contained
         # data. This takes care of that problem
 
         logger.debug('no_data_table(): Metadata Table NOT populated')
         logger.warning('Metadata Table NOT populated. Possibly no SD Metadata in image: %s.', filename)
-        diddley = QTableWidget()    # no, not as in Bo.
+        diddley = QTableWidget()    # no, not as in Bo. As in diddley squat
         diddley.setColumnCount(2)
         diddley.setRowCount(1)
         diddley.setItem(0, 0,  QTableWidgetItem(' No Metadata '))
@@ -241,10 +228,7 @@ class MetadataTable(QWidget):
                     False if no metadata.
         """
 
-            # tested with over 145 AI generated images from as many places as 
-            # possible most with generation metadata.
-
-            # Parse metadata from Stable Diffusion
+        # Parse metadata from Stable Diffusion
         logger.debug(f'get_image_metadata(): image_path: {image_path}')
         try:
             with open(image_path, "rb+") as f:
@@ -267,6 +251,7 @@ class MetadataTable(QWidget):
             metadata = json.loads(image_metadata.props)
             md_orig_key_count = len(metadata)
             settings_str = image_metadata.setting
+            logger.debug(f'{settings_str=}')
 
             # is settings_str empty or only white space?
             if settings_str and not settings_str.isspace():
@@ -282,17 +267,14 @@ class MetadataTable(QWidget):
                         )
                         for k, v in (pair.split(': ', 1) for pair in settings_str.split(', '))
                     }
+                    logger.debug(f"setting key count: {len(settings_dict)}")
                 except ValueError as e:
                     logger.debug(f'ValueError encountered with {image_path} while parsing settings_str. Probable badly formatted data:\n {e}')
                     settings_dict = {}
                     metadata['settings'] = settings_str
             else:
-                # This else statement really helps during development
-                # otherwise its pretty innocuous
+                settings_dict = {}
                 logger.debug('setting metadata empty')
-
-            logger.debug(f'{settings_str=}')
-            logger.debug(f"setting key count: {len(settings_dict)}")
 
             # add the tool used to create image
             if image_metadata.tool:
@@ -301,7 +283,9 @@ class MetadataTable(QWidget):
                 metadata['tool_used'] = 'Unknown'
 
             metadata = self.flatten_dict(metadata)
-            settings_dict = self.flatten_dict(settings_dict)
+            if settings_dict is None:
+                settings_dict = self.flatten_dict(settings_dict)
+
             # before the blending remove the 'setting' key since we no longer need it.
             metadata.pop('setting')
 
@@ -335,7 +319,6 @@ class MetadataTable(QWidget):
             # in SAMPLERS_NAMES, it updates metadata['sampler'] with a
             # the full name of the sampler replacing the acronym.
             sampler_name = metadata.get('sampler')
-            # logger.debug(f' sampler_name is: {sampler_name}')
             if sampler_name:
                 metadata['sampler'] = SAMPLERS_NAMES.get(sampler_name.lower(), sampler_name)
             else:
@@ -364,5 +347,5 @@ class MetadataTable(QWidget):
             # cleanup a bit
             del settings_dict
             del blended
-            logger.debug('get_image_metadata(): returing processed metadata. ')
+            logger.debug('get_image_metadata(): returning processed metadata. ')
         return metadata
