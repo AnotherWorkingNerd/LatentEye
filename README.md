@@ -19,7 +19,7 @@ My interest in AI image generation began with [Automatic 1111](https://github.co
 
 Prior to LatentEye, I had no knowledge of PyQt 6, so this project serves as my opportunity to learn it and many other diffuse and pythonic things along the way. This is a way for an old nerd to try and remain relevant. The name is a play on [Latent Space](https://www.ibm.com/think/topics/latent-space) and [Latent Image](https://comfyui-wiki.com/en/comfyui-nodes/latent/empty-latent-image). For the mathematicians or Generative AI developers, you might find this interesting: [Complexity Matters: Rethinking the Latent Space for Generative Modeling](https://arxiv.org/pdf/2307.08283). Just for the record, I'm neither and 99% of that paper I didn't understand. whoo hoo I'm a 1%er!?!? LOL.
 
-LatentEye was designed, developed a on Mac and and tested on MacOS and Linux. It is expected to run on Windows and maybe other platforms supported by Qt. I primarily only use Windows for playing [GuildWars 2](https://www.guildwars2.com) and a few other Steam games, so my testing on Windows has been very light.
+LatentEye was designed, developed on a Mac and and tested on MacOS and Linux. It is expected to run on Windows and maybe other platforms supported by Qt. I primarily only use Windows for playing [GuildWars 2](https://www.guildwars2.com) and a few other Steam games, so my testing on Windows has been very light.
 
 ![mainwin](./docs/images/main_window.png)
 
