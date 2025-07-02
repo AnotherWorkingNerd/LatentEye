@@ -19,7 +19,7 @@ My interest in AI image generation began with [Automatic 1111](https://github.co
 
 Prior to LatentEye, I had no knowledge of PyQt 6, so this project serves as my opportunity to learn it and many other diffuse and pythonic things along the way. This is a way for an old nerd to try and remain relevant. The name is a play on [Latent Space](https://www.ibm.com/think/topics/latent-space) and [Latent Image](https://comfyui-wiki.com/en/comfyui-nodes/latent/empty-latent-image). For the mathematicians or Generative AI developers, you might find this interesting: [Complexity Matters: Rethinking the Latent Space for Generative Modeling](https://arxiv.org/pdf/2307.08283). Just for the record, I'm neither and 99% of that paper I didn't understand. whoo hoo I'm a 1%er!?!? LOL.
 
-LatentEye was designed, developed a Mac and and tested on MacOS and Linux. It is expected to run on Windows and maybe other platforms supported by Qt. I primarily only use Windows for playing [GuildWars 2](https://www.guildwars2.com) and a few other Steam games, so my testing on Windows has been very light.
+LatentEye was designed, developed a on Mac and and tested on MacOS and Linux. It is expected to run on Windows and maybe other platforms supported by Qt. I primarily only use Windows for playing [GuildWars 2](https://www.guildwars2.com) and a few other Steam games, so my testing on Windows has been very light.
 
 ![mainwin](./docs/images/main_window.png)
 
@@ -41,7 +41,7 @@ This release is a significant improvement of LatentEye. The Summary is below and
 - improved speed for thumbnails with progress bar.
 - Thumbnail sorting. defaults to sort by name.
 - EyeSight: all tool bar buttons functional. Zoom and zoom reset works.
-- Added Thumbnail refresh. if new files get added to the directory you're looking at, hit refresh.
+- Added Thumbnail refresh. If new files get added to the directory you're looking at, hit refresh.
 
 Some things may still have issues. The [KnownIssues](./docs/known_issues.md) have been updated.
 
@@ -176,7 +176,8 @@ My vision for future versions, This list is just the high level items, presented
 - Lots of coding improvements that would be completely unseen. This could cover all areas of LatentEye
 - Creating an installer and maybe executables.
 - Adjustable font and font size for the file tree and different icons
-- status bar
+- Status bar
+- Some sort of install script/program
 
 ### Stuff LatentEye doesn't do and probably will never do.
 - Image editing. Image editing is a specialized task. This is a viewer, and there are many excellent image editing tools available. I won't recommend a specific one, as your requirements may differ from those of others.
@@ -185,7 +186,7 @@ My vision for future versions, This list is just the high level items, presented
 - Drag and drop. There are other apps that support that like [sd-prompt-reader](https://pypi.org/project/sd-prompt-reader/)
 - Image Printing. It's highly improbable because of the necessary code and support. There are many better ways to print an image without adding this feature.
 
-Of course this list is subject to change but the first and last ones are very unlikely to change.
+Of course this list is subject to change but the first and last ones on the never do list are very unlikely to change.
 
 ## Localization
 This is planned for a version at some future time and will take quite a bit of refactoring of the existing code to facilitate Localization.
@@ -201,6 +202,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 The software includes third-party libraries that are subject to their own licenses and disclaimers.
 
 A mention would be nice, however. :-)
+
 ----
 #### Footnotes:
 
