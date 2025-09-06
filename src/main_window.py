@@ -19,16 +19,15 @@ from .info_view import InfoView
 from .latent_tools import Settings, show_error_box
 from .thumbnail_view import ThumbnailView
 
+
 logger = logging.getLogger(__name__)
+
 
 class MainWindow(QMainWindow):
     """
-    LatentEye main application window. Everything starts from here.
-    menu bar, toolbar, window splitters with file tree, Metadata view
     and center thumbnail view.
     """
     sortMethodChanged = pyqtSignal(str)
-
     def __init__(self):
         super().__init__()
 
@@ -53,7 +52,6 @@ class MainWindow(QMainWindow):
 
         logger.debug('Setting up qsplitter')
         self.splitter = QSplitter(Qt.Orientation.Horizontal)
-        # self.splitter.setStyleSheet(splitter_style)
         self.filetree_view = FileTreeView()
         self.thumbnail_view = ThumbnailView()
         self.info_view = InfoView()
@@ -62,7 +60,7 @@ class MainWindow(QMainWindow):
         self.splitter.addWidget(self.thumbnail_view)
         self.splitter.addWidget(self.info_view)
 
-        # Set minimum sizes to prevent views from becoming too small
+        # Optional: Set minimum sizes to prevent views from becoming too small
         self.filetree_view.setMinimumWidth(50)
         self.thumbnail_view.setMinimumWidth(400)
         self.info_view.setMinimumWidth(120)
@@ -80,11 +78,10 @@ class MainWindow(QMainWindow):
         Center the app window in center of the desktop of
         the current monitor.
         """
-
         # get the geometry of the Main Window
-        app_frame = self.frameGeometry()
         # Then the reported screen resolution and the center point
-        # of the current monitor. There could be more then one monitor.
+        # of the current monitor since there could be more then one monitor.
+        app_frame = self.frameGeometry()
         ctr_point = self.screen().availableGeometry().center()
         # Set the center of the the app_frame rectangle to the center of
         # the screen & reset the app_frame position so it's centered
@@ -106,7 +103,6 @@ class MainWindow(QMainWindow):
         docs_action.triggered.connect(self.helpMe)
         help_menu.addAction(docs_action)
         help_menu.addSeparator()
-
         about_action = QAction('&About', self)
         about_action.triggered.connect(self.about_box)
         help_menu.addAction(about_action)
@@ -130,7 +126,7 @@ class MainWindow(QMainWindow):
         sort_lbl = QLabel('Sort: ')
         toolbar.addWidget(sort_lbl)
         self.sort_dropdown = QComboBox()
-        self.sort_dropdown.addItems(['Name', 'Creation Date', 'File Size', 'Extension', 'Default (Unsorted)'])
+        self.sort_dropdown.addItems(['Name', 'Last modified date', 'File Size', 'Extension', 'Default'])
         self.sort_dropdown.activated.connect(self.on_sort_changed)
         toolbar.addWidget(self.sort_dropdown)
 
@@ -161,10 +157,7 @@ class MainWindow(QMainWindow):
         curr_idx = self.sort_dropdown.currentIndex()
         self.sortMethodChanged.connect(lambda: self.thumbnail_view.sort_image_files(self.current_directory, curr_text))
         logger.debug(f"main:Sort method changed to: {sort_method}")
-        logger.debug(f"main:Sort method current text: {curr_text}")
-        logger.debug(f"main:Sort method Index: {curr_idx}")
         self.sortMethodChanged.emit(sort_method)
-        logger.debug('exiting on_sort_changed()')
 
     def toggle_files_panel(self):
         """
@@ -181,7 +174,6 @@ class MainWindow(QMainWindow):
         """
         does what it says. its not the secret of flying pigs.
         """
-
         logger.debug('button clicked. collapsing right')
         sizes = self.splitter.sizes()
         if sizes[2] > 0:
@@ -196,9 +188,9 @@ class MainWindow(QMainWindow):
 
     def helpMe(self):
         """ need professional help to get things straight """
-        msg = 'Docs haven\'t been integrated here yetHowever they are available on' + \
-               'Github at <a href="https://github.com/AnotherWorkingNerd/LatentEye" target="_blank">LatentEye Docs</a>'
+    # TODO: FV - complete the helpMe function
         show_error_box(msg, 'info')
+    # The idea is to open a page on the repo github pages that has the help info
 
     def about_box(self):
         """ Its all About me in a box. """
@@ -234,7 +226,6 @@ class MainWindow(QMainWindow):
         """
         Ensures all windows are closed when the main window is closed.
         """
-
         QApplication.closeAllWindows()
         super().closeEvent(event)
         event.accept()

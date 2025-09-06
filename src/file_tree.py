@@ -4,29 +4,25 @@
 # all major platforms.
 # this should emit a a directory path to thumbnail_view.
 #
-#
-# this seems to talk about what I am trying to do here.
-# https://doc.qt.io/qtforpython-6/overviews/model-view-programming.html#using-views-with-an-existing-model
 
-
-# import os       # old habits die hard. maybe I'll switch to pathlib
 import sys
 import logging
 from pathlib import Path
 
-from PyQt6.QtCore import Qt, QDir, QStorageInfo, pyqtSignal, QFileSystemWatcher
-from PyQt6.QtWidgets import QTreeView, QVBoxLayout, QWidget, QLabel, QComboBox, QMenu
-from PyQt6.QtGui import QFileSystemModel, QColor, QFont, QIcon,QAction, QContextMenuEvent
+from PyQt6.QtCore import Qt, QDir, QStorageInfo, pyqtSignal
+from PyQt6.QtWidgets import QTreeView, QVBoxLayout, QWidget, QLabel, QComboBox
+from PyQt6.QtGui import QFileSystemModel, QColor, QFont, QIcon
 
 # # Set up logging
 logger = logging.getLogger(__name__)
+
 
 class CustomFileSystemModel(QFileSystemModel):
     """
     subclass QFileSystemModel and override its data() method to customize how the
     directories are displayed. Check if a directory contains any files that match the
-    name filters that are in place and change the color of the directory name and
-    directory icon.
+    name filters that are in place and change the color of the directory and change
+    the color of the icon and directory name.
     """
 
     def __init__(self, parent=None):
@@ -56,7 +52,7 @@ class CustomFileSystemModel(QFileSystemModel):
 
             # By default, QFileSystemModel uses native icons
             # for directories and files. To override these, you must
-            # supply your own icons or use QIcon Object.
+            # supply your own icons or use QIcon Objecta.
             if role == Qt.ItemDataRole.DecorationRole:
                 if contains_matching_files:
                     return QIcon('icon:folder-green.svg')
@@ -70,6 +66,7 @@ class CustomFileSystemModel(QFileSystemModel):
             # for reference: Cyan = #00FFFF | darkGray = #808080
             # #36bb17 = rgb 54, 187,19
             if role == Qt.ItemDataRole.ForegroundRole:
+                # return (QColor(Qt.GlobalColor.green) if contains_matching_files
                 return (QColor(54, 187, 19) if contains_matching_files
                     else QColor(Qt.GlobalColor.gray))
 
@@ -91,25 +88,23 @@ class FileTreeView(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        # Set up the file system model, and configure the UI.
+        # the UI components.
         logger.debug('Entering FileTreeView')
-        # Set up the file system model, and configure the
-        # UI components. Create a file system model that
-        # allows the entire FS and and looks like something
-        # we are all used to.
+
+        # Create a file system model that allow the entire FS.
+        # and and looks like something we are all used to.
         self.model = CustomFileSystemModel()
         self.model.setRootPath('')
         logger.debug('FileTreeView: Root path set to the filesystem root.')
 
-        # filter out anything but graphics files
+        # graphics filter might be a part of user settings.
         graphics_filters = ['*.png', '*.jpg', '*.jpeg', '*.webp']
         self.model.setNameFilters(graphics_filters)
         self.model.setNameFilterDisables(False)
 
-        # only show directories.
-        # https://www.riverbankcomputing.com/static/Docs/PyQt6/api/qtcore/qdir.html#Filter
+        # only show directories aka folders.
         self.model.setFilter( QDir.Filter.NoDotAndDotDot | QDir.Filter.AllDirs)
-        # self.model.setFilter( QDir.Filter.NoDotAndDotDot | QDir.Filter.AllEntries | QDir.Filter.AllDirs )
-        # self.model.setFilter(QDir.Filter.AllDirs | QDir.Filter.NoDotAndDotDot | QDir.Filter.AllEntries | QDir.Filter.System)
         logger.debug(f'FileTreeView: Applied graphics filters: {graphics_filters}')
         self.tree = QTreeView()
         self.tree.setModel(self.model)
@@ -133,7 +128,7 @@ class FileTreeView(QWidget):
         self.tree.setColumnHidden(2, True)
         self.tree.setColumnHidden(3, True)
 
-        # slot in click event. why not just call it connect? maybe connect events?
+        # slot in click event. why not just call it connect? maybe connect event?
         # signal/slot only seems to be used in the Qt/PyQt Docs.
         self.tree.clicked.connect(self.onFileSelected)
 
@@ -141,10 +136,6 @@ class FileTreeView(QWidget):
         self.driveSelector = QComboBox()
         self.populateDrives()
         self.driveSelector.currentTextChanged.connect(self.changeDrive)
-
-        # Add a context menu - but this is still a WIP
-        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.showContextMenu)
 
         # The simple layout
         layout = QVBoxLayout(self)
@@ -159,7 +150,7 @@ class FileTreeView(QWidget):
         Exclude platform dependant system volumes or inaccessible storage.
         """
         drives = []
-        # drives that I don't think should be shown.
+        # drives that I don't think should be shown
         mac_verboten = {'TimeMachine', 'System','Library'}
         linux_verboten = {'proc', 'sys', 'run', 'etc', 'sbin', 'bin'}
         windows_verboten = {'$Recycle.Bin', 'System Volume Information'}
@@ -177,7 +168,6 @@ class FileTreeView(QWidget):
                     continue
 
             if sys.platform == 'linux':
-                # having a slash in front of every name is ugly.
                 noslash_name = volume_name[1:] if volume_name.startswith('/') else volume_name
                 if noslash_name in linux_verboten or root_path == '/':
                     continue
@@ -228,25 +218,9 @@ class FileTreeView(QWidget):
             self.fileSelected.emit(str(fpname))
             self.directoryChosen.emit(str(Path(fpname).parent))
             logger.debug(f'onFileSelected emitting File selected(fqfn): {fpname}')
+            # logger.debug(f'onFileSelected emitting directory: {Path(fpname).parent}')
 
         elif Path(fpname).is_dir():
             logger.debug(f'onFileSelected(): directory selected: {fpname}')
             self.fileSelected.emit(None)
             self.directoryChosen.emit(fpname)
-
-    def showContextMenu(self, point):
-        logger.debug('FileTreeView.ShowContextMenu: Right click detected. ')
-        cmenu = QMenu(self)
-        meta_action = QAction("Delete File(s)", self)
-        meta_action.triggered.connect(self.deleteFiles)
-        cmenu.addAction(meta_action)
-        cmenu.exec(self.viewport().mapToGlobal(point))
-
-    def deleteFiles(self, filelist):
-        # pass in filelist of 1 or more files
-        # validate file existence and permissions
-        # loop through list of files and remove them
-        # refresh directory listing and thumbnails.
-        ...
-        # obviously this isn't done yet.
-#

@@ -33,8 +33,8 @@ from PyQt6.QtWidgets import QLayout, QGridLayout, QSizePolicy, QWidget, QScrollA
 
 class FlowLayout(QLayout):
     """
-    A custom layout that arranges child widgets in a dynamically
-    sized scrollable grid, reshaping the grid when the window is
+    A custom layout that arranges child widgets in a dynamically 
+    sized scrollable grid, reshaping the grid when the window is 
     resized.
     """
 
@@ -100,6 +100,8 @@ class FlowLayout(QLayout):
             size = size.expandedTo(item.minimumSize())
 
         margins = self.contentsMargins()
+        # Old: size += QSize(2 * self.contentsMargins().top(), 2 * self.contentsMargins().top())
+        # this is basically the same.
         margins.top()
         size += QSize(2 * margins.left(), 2 * margins.top())
         return size

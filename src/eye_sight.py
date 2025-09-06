@@ -14,7 +14,8 @@
 # so.. something like es = EyeSight(filename)
 
 import logging
-import platform
+# import platform
+import sys
 from pathlib import Path
 
 from PyQt6.QtCore import Qt, QDir, QFileInfo, QPoint
@@ -24,7 +25,7 @@ from PyQt6.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QScrollArea
 
 from PyQt6.QtGui import QPixmap, QPalette, QAction, QIcon, QKeySequence, QWheelEvent
 from .metadatatable import MetadataTable
-from .latent_tools import Settings
+from .latent_tools import Settings, clipboard_copy
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +63,7 @@ class EyeSight(QMainWindow):
         self.setCentralWidget(self.pic_scroll)
         es_layout = QWidget(self)
         layout = QVBoxLayout(es_layout)
+        # layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.pic_scroll)
         self.setCentralWidget(es_layout)
 
@@ -100,7 +102,6 @@ class EyeSight(QMainWindow):
         view_menu = pw_menu.addMenu("View")
         # add tool bar visibility toggle
         tb_action = QAction("Show Toolbar", self, checkable=True)
-# TODO: this should be a check mark when toggled and refactor "something" to whatever it should be.
         tb_action.setChecked(True)
         tb_action.triggered.connect(self.something)
         view_menu.addAction(tb_action)
@@ -118,11 +119,10 @@ class EyeSight(QMainWindow):
         Create the the toolbar for EyeSight along
         with the associated buttons and actions
         """
-
         # tb_background = '#f0f0f0'    # nearest to css color: Gainsboro (#DCDCDC)
         # tb_background = '#616161'    # closest matching CSS color: DimGrey #696969
         # tb_background = '#37474F'    # dark slate gray with a bluish tint. No matching CSS Color.
-        tb_background = '#37474F'    # nice Gray'
+        tb_background = '#37474F'      # nice Gray'
         # without 'border:none' nothing changes. another Qt Quirk?
         toolbar_style = f'QToolBar {{ background: {tb_background}; spacing: 2px; border: none}}'
         self.pw_toolbar = QToolBar('PW Toolbar', self)
@@ -131,6 +131,7 @@ class EyeSight(QMainWindow):
         logger.debug("init_toolbar(): Toolbar added to main window.")
         self.pw_toolbar.setVisible(True)
         logger.debug("init_toolbar(): Toolbar set visible")
+        # TB background color and spacing between items in the tool bar
         self.pw_toolbar.setStyleSheet(toolbar_style)
         # follow system style regarding display text labels with icons
         self.pw_toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonFollowStyle)
@@ -162,6 +163,7 @@ class EyeSight(QMainWindow):
         self.image_zoom_out_action.triggered.connect(self.zoom_out)
 
         image_zoom_reset_action = QAction(QIcon('icon:actual-size.svg'), 'Reset Zoom', self)
+        # fs_key  = QKeySequence.StandardKey.
         image_zoom_reset_action.setShortcut('Ctrl+R')
         image_zoom_reset_action.triggered.connect(self.normal_size)
 
@@ -230,13 +232,12 @@ class EyeSight(QMainWindow):
         dlg.setWindowTitle('Image Metadata')
         dlg.setGeometry(200, 300, 600, 450)
         dlg.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
-        ok_btn = QDialogButtonBox.StandardButton.Ok
 
         self.copy_btn = QPushButton("Copy to Clipboard")
-        self.bbox = QDialogButtonBox(ok_btn)
+        self.bbox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
         self.bbox.addButton(self.copy_btn, QDialogButtonBox.ButtonRole.ActionRole)
         self.bbox.accepted.connect(dlg.accept)
-        self.copy_btn.clicked.connect(self.copy_to_clipboard)
+        self.copy_btn.clicked.connect(lambda: clipboard_copy(self.populated_table))
 
         col_width = 625
         self.populated_table.setWordWrap(True)
@@ -262,12 +263,17 @@ class EyeSight(QMainWindow):
 
         Only called by get_image_data()
         """
+        # maybe this is more informative or more specific?
         logger.debug('entering show_metadata_error()')
         finfo = QFileInfo(self.picture_path)
         mbox = QMessageBox(self)
         mbox.setWindowTitle(Settings.APPNAME)
         mbox.setIcon(QMessageBox.Icon.Warning)
 
+        # mbox.setStyleSheet("font-size: 16px; font-weight: bold;")
+        # looks like resizing a QMessagebox is very hacky and the cleanest requires something like:
+        # msg.setStyleSheet("QLabel {min-width: 300px; min-height: 200px;}")
+        # only use the filename not the entire path.
         _err_msg = f"<p style='text-align: center;'>No SD Metadata could be found in image:<br><em> {finfo.fileName()}</em></p>"
         mbox.setText("<p style='text-align: center;'><strong>No Metadata found.</p>")
         mbox.setInformativeText(_err_msg)
@@ -278,11 +284,13 @@ class EyeSight(QMainWindow):
     def toggle_toolbar(self, state):
         """ Toggle visibility of the Toolbar """
         if state:
+            # self.pw_toolbar.show()
             self.pw_toolbar.toggleViewAction().setChecked(True)
             self.pw_toolbar.toggleViewAction().trigger()
         else:
             self.pw_toolbar.toggleViewAction().setChecked(False)
             self.pw_toolbar.toggleViewAction().trigger()
+            # self.pw_toolbar.hide()
 
     # zoomy zoom zoom.
     def zoom_in(self):
@@ -296,9 +304,6 @@ class EyeSight(QMainWindow):
         if not self.pixmap:
             return
 
-        # self.scale_image(1.0)
-        # humm.. image fills window better by defaulting to a 1.25 zoom factor
-        # Qt Quirk?
         self.scale_image(1.25)
         self.lbl_pict.setPixmap(self.pixmap.scaled(self.pixmap.size(),
                             Qt.AspectRatioMode.KeepAspectRatio,
@@ -396,6 +401,7 @@ class EyeSight(QMainWindow):
             mbox.setInformativeText(f"Details:\n{ex}")
             mbox.setStandardButtons(QMessageBox.StandardButton.Ok)
             mbox.exec()
+            # Do I want a close here?
             self.close()
         else:
             logger.debug('load_image(): else of try..except ')
@@ -407,31 +413,6 @@ class EyeSight(QMainWindow):
                 )
             )
         logger.debug('exiting load_image()')
-
-    def copy_to_clipboard(self):
-        """ Copy the image metadata table's content to the system clipboard. """
-
-        logger.debug('Copying table content to clipboard')
-        # clipboard = QGuiApplication.clipboard()
-        # the above requires yet another include and the line below
-        # seems to work just fine. IDK / understand why I'd use the other one.
-        clipboard = QApplication.clipboard()
-
-        # if there isn't anything useful in the table, don't return anything.
-        if self.populated_table.rowCount() <= 3:
-            logger.debug('nothing to copy to clipboard. clipboard set to None.')
-            return clipboard.setText(None)
-
-        content = []
-        content.append(f'Metadata for {self.picture_path}\n')
-        for row in range(self.populated_table.rowCount()):
-            row_data = []
-            for col in range(self.populated_table.columnCount()):
-                item = self.populated_table.item(row, col)
-                row_data.append(item.text() if item else "")
-            content.append("\t".join(row_data))
-        clipboard.setText("\n".join(content))
-        logger.debug('Table content copied successfully')
 
     def adjust_scrollbar(self, scrollBar, factor):
         """
@@ -454,8 +435,7 @@ class EyeSight(QMainWindow):
 
     def _is_zoom_modifier(self, modifiers):
         """ so many keys.... alt, option, windows, meta, control, command"""
-        system = platform.system()
-        if system == 'Darwin':
+        if sys.platform == 'darwin':
             return modifiers & Qt.KeyboardModifier.AltModifier  # Option key
         else:   # if its not Mac, its either Linux or Windows.
             return modifiers & Qt.KeyboardModifier.AltModifier

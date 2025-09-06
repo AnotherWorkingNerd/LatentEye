@@ -1,5 +1,34 @@
 # Change Log
 All notable changes to this project will be documented in this file.
+## [0.3.0] - 2025-09-01
+- All docs and screenshots have been updated or edited.
+- eye_sight.py - Refactor: to use clipboard function in latent_tools.py & removing redundant code.
+- eye_sight.py - Refactor: for the sake of consistency switched to using sys.platform instead of platform.system().
+- File_tree.py - Removed: unused context menu code
+- info_view.py - Fixed: issue when no metadata found, file name being elided with ...
+- info_view.py - Removed: copy_to_clipboard() function.
+- info_view.py - Refactor: to use latent_tools clipboard function.
+- latent_tools.py - Added: new sampler names added to SamplerNames strEnum so they are Human readable not just a string of characters
+- latent_tools.py - Refactor: Reordered functions and classes from the mess that they were.
+- latent_tools.py - Removed: ttip_color() only used in one place for thumbnail_view.py converted to TOOLTIPCOLOR_QSS
+- latent_tools.py - Fixed: clipboard_copy()
+- latent_tools.py - Added Style Class. All things style related. QSS and Static methods
+- latent_tools.py - Added Style.TOOLTIPCOLOR_QSS - changes the tooltip color for the thumbnail ToolTips
+- latent_tools.py - Added Style.set_table_styling() same as set_table_styling() before just moved to Style class
+- metadatatable.py - Refactor: how sampler names in metadata are handled. use strEnum instead of dict.
+- metadatatable.py - Removed: SAMPLERS_NAMES dict and replaced with StrEnum from latent_tools.py
+- metadatatable.py - Moved: method set_table_styling() to latent_tools Style Class as static method.
+- metadatatable.py - Moved: rearranged some of the methods and functions so they were in a more logical order.
+- thumbnail_view.py - Added: show_thumbnail_context_menu() Context menu for file delete, rename, copy path to clipboard and show in OS specific file manager
+- thumbnail_view.py - Added: move_thumbnail_to_trash() - does exactly what it says. platform independent.
+- thumbnail_view.py - Added: rename_thumbnail_file() - uses OS native file dialog box for rename and sanitizes bad names.
+- thumbnail_view.py - Added: filename_to_clipboard() - copies FQFN to system clipboard.
+- thumbnail_view.py - Added: open_file_manager() - Open an OS specific file manager and if possible highlights selected file.
+- thumbnail_view.py - Fixed: show_selected() to account for deleting and renaming files and the associated thumbnails.
+- thumbnail_view.py - Fixed: update_progress() changed progressbar text to reflect what its really doing.
+- thumbnail_view.py - Fixed: sort_image_files() now sorts as it should and changed from file Creation Date to Last modified date.
+- thumbnail_view.py - Refactor: improved some of error messages to add more meaningful info.
+- thumbnail_view.py - Refactor: add_thumbnail() to add context menu to thumbnails and moved tooltip stylesheet to latent_tools.py
 
 ## [0.2.0] - 2025-06-01
 This is a big update with many improvements affecting all parts of LatentEye.
