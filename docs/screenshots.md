@@ -9,12 +9,11 @@ With the file tree panel off and showing the metadata for the selected image.
 Both panels off. This can be helpful if you have a lot of images.
 ![both-off](./images/both_panels_off.png)
 
+Context menu for limited file management
+![cmenu](./images/context_menu_sm.png)
+
 Double click on a thumbnail for EyeSight.
 ![EyeSight](./images/eyesight.png)
 
 Click on the toolbar icon with the eye to get metadata.
 ![EyeSight-metadata](./images/eyesight_metadata.png)
-<br>
-Tip: You can compare 2 or more images with multiple EyeSight windows open. Simply double click or each image. Of course each image requires some system and GPU memory. There is a window limit, what that limit is for _you_ depends on _your system_
-
-The data copied to the clipboard contains the filename of the image and all the data you see in the table. Tab delimited Plain text format.

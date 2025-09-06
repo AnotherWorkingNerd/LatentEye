@@ -1,5 +1,5 @@
 
-# Python3 intallation
+# Python3 installation
 
 In order to use LatentEye you need to have python3.12 or later on your system. The instructions for Linux, macOS, and Windows are below
 

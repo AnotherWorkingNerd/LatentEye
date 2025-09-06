@@ -13,11 +13,11 @@
 </p>
 
 ## Introduction:
-LatentEye allows you to visually explore local AI-generated images and uncover their hidden metadata. This user-friendly desktop app offers features for viewing, managing metadata, and clipboard operations. Primarily for ComfyUI and Stable Diffusion images but views any of the supported file types.
+LatentEye allows you to visually explore local AI-generated images and view their hidden metadata. This user-friendly desktop app offers features for viewing, managing metadata, and clipboard operations. Primarily for ComfyUI and Generative AI tools that produce images with Stable Diffusion compatible metadata but can view any of the supported file types.
 
 My interest in AI image generation began with [Automatic 1111](https://github.com/AUTOMATIC1111/stable-diffusion-webui), followed by a discovery of the amazing [ComfyUI](https://www.comfy.org). In the process of creating images, I struggled to find an image viewer that displayed my creations along with the metadata in a way I liked. This led me to create LatentEye, initially it is designed for ComfyUI and Stable Diffusion based tools, support additional GenAI apps may be added in the future.
 
-Prior to LatentEye, I had no knowledge of PyQt 6, so this project serves as my opportunity to learn it and many other diffuse and pythonic things along the way. This is a way for an old nerd to try and remain relevant. The name is a play on [Latent Space](https://www.ibm.com/think/topics/latent-space) and [Latent Image](https://comfyui-wiki.com/en/comfyui-nodes/latent/empty-latent-image). For the mathematicians or Generative AI developers, you might find this interesting: [Complexity Matters: Rethinking the Latent Space for Generative Modeling](https://arxiv.org/pdf/2307.08283). Just for the record, I'm neither and 99% of that paper I didn't understand. whoo hoo I'm a 1%er!?!? LOL.
+Prior to LatentEye, I had no knowledge of PyQt 6, so this project serves as my opportunity to learn it and many other diffuse and pythonic things along the way. This is a way for an old nerd to try and remain relevant. The name is a play on [Latent Space](https://www.ibm.com/think/topics/latent-space) and [Latent Image](https://comfyui-wiki.com/en/comfyui-nodes/latent/empty-latent-image). For the mathematicians or Generative AI developers, you might find this interesting: [Complexity Matters: Rethinking the Latent Space for Generative Modeling](https://arxiv.org/pdf/2307.08283). Just for the record, I'm not a mathematician and 99% of that paper I didn't understand. whoo hoo I'm a 1%er!?!? LOL.
 
 LatentEye was designed, developed on a Mac and and tested on MacOS and Linux. It is expected to run on Windows and maybe other platforms supported by Qt. I primarily only use Windows for playing [GuildWars 2](https://www.guildwars2.com) and a few other Steam games, so my testing on Windows has been very light.
 
@@ -36,6 +36,12 @@ Here are a few more [screenshots](./docs/screenshots.md) if interested.
 - Cross Platform by using PyQt6. Runs on Linux, macOS, and Windows.
 - Dark mode
 
+## 0.3.0 Release
+The Summary is below and the [CHANGELOG](./CHANGELOG.md) provides all the details.
+- Added context menu to thumbnails for delete, rename and clipboard functions
+- code cleanup, lots of internal work and hopefully improvement.
+- updated documentation and screenshots.
+
 ## 0.2.0 Release Notice
 This release is a significant improvement of LatentEye. The Summary is below and the [CHANGELOG](./CHANGELOG.md) provides all the details.
 - improved speed for thumbnails with progress bar.
@@ -45,11 +51,14 @@ This release is a significant improvement of LatentEye. The Summary is below and
 
 Some things may still have issues. The [KnownIssues](./docs/known_issues.md) have been updated.
 
+## Documentation
+I think this is pretty well covered in [how to use LatentEye](./docs/How_to_use_LatentEye.md) if not let me know.
+
 # Installation
 
 ## Requirements:
 - Python versions: 3.12.3 or later is required due to StringEnums being used.
-- PyQt6 see: [Installing PyQt6](https://www.riverbankcomputing.com/static/Docs/PyQt6/installation.html)
+- PyQt v6.8 see: [Installing PyQt6](https://www.riverbankcomputing.com/static/Docs/PyQt6/installation.html)
 
 In order to use LatentEye you need to have python3.12 or later on your system. If you don't have it installed instructions are provided in [Python3 installation ](./install_python.md)
 
@@ -119,25 +128,29 @@ Now were ready to actually install LatentEye. Just follow along with the steps b
    ```
    You can also launch LatentEye using different Qt styles. The names are:
     - Fusion
-    - macOS
-    - Windows
+    - macOS    note: this only works on macOS.
+    - Windows  note: this only works on Windows.
+    - Basic
+    - Imagine
+    - iOS
+    - Material
+    - Universal
+    - FluentWinUI3 Style   note: this works on all platforms.
 
    use `python LatentEye.py -style [StyleName]` to use a different Qt style.
-
-## Documentation
-I think this is pretty well covered in [how to use LatentEye](./docs/How_to_use_LatentEye.md) if not let me know.
+   <br>This may depend on the version of Qt 6.x installed.
 
 ## Testing.
 **Confirmed successful runs on the following:**
 - Operating Systems:
   - MacOS Monterey or greater.
   - Ubuntu 24.04.1 LTS (Noble Numbat)
-  - Windows 11
+  - Windows 10, 11
 
 - Python Versions
   - 3.12
   - 3.13
-- PyQt version 6.7 or later.
+- PyQt version 6.8 or later.
 
 The testing was constrained by the resources at hand. It was tested across multiple platforms, storage devices, and utilizing over 150 distinct image files from a wide range of publicly accessible AI generators.
 
@@ -150,28 +163,28 @@ Contributions in any form are encouraged so of the ways you can do this with lit
 
 Contributions requiring a bit more effort on your part:
  - If you have an AI generated image png, jpeg image that doesn't display the image or metadata properly please create a bug report and provide details of what the problem is and what was used generate it, and what was expected. if applicable, a copy of the existing metadata would be helpful for verification purposes.
-- If you have something in mind that you would like to work on, please open a discussion issue first to discuss any implementation details to avoid duplicating efforts then open a PR when you feel that it is ready.
-- Improving documentation, if you see typo's, bad grammer, or docs that can be improved please file an issue and let me know the details.
+- If you have something in mind. please fork the repo, create a new branch for your code, write it, test it, commit and push it then open a PR to the main repo.
+- Improving documentation, if you see typo's, bad grammar, or docs that can be improved please file an issue and let me know the details.
 
-I had forgotten how much non-coding work went into setting up a public repo. Your involvement and support helps keep me motivated.
+I had forgotten how much non-coding work went into setting up a public repo. Your involvement and support will help keep me motivated.
 
 ## LatentEye's vision for the future.
 
 First on the list is, of course, getting LatentEye feature complete that means everything operates as I planned, intended, or expected. Here are some of the things that I'm working on now:
 
 Updated June 2025:
-- file handling including file rename, file move, file delete, maybe and copy
-- EyeSight improvement - image sizing and other minor issues. Maybe eating still more carrots. :-)
-- Fix platform specific issues like Linux font sizes, etc.
-- Still Lots of internal improvements with the code.
+- DONE Aug2025: file handling including file rename, ~~file move~~, file delete, ~~maybe copy~~
+- IN PROGRESS: EyeSight improvement - image sizing and other minor issues. Maybe eating still more carrots. :-)
+- RESEARCHING:Fix platform specific issues like Linux font sizes, etc.
+- IN PROGRESS: Still Lots of internal improvements with the code.
 - Testing on Windows.
-- Rewriting or fixing any typos or mistakes in the ~~diments~~ documents I've written. I think I've got most of them.
+- DONE?: Rewriting or fixing any typos or mistakes in the ~~duckumints~~ documents I've written. I think I've got most of them.
 
 My vision for future versions, This list is just the high level items, presented in random order, and **not** prioritized:
 - Improve the UI / UX
 - App save settings, like window locations and last used path.
 - Media playback. videos and music
-- Render ComfyUI workflows. I don't know how much work this is. lots of JSON
+- Render ComfyUI workflows. ~~I don't know how much work this is~~. Wow, to do this the way I envision is a lot more work than I expected.
 - User setting. make things as configurable as possible. colors, fonts, file formats, etc.
 - Lots of coding improvements that would be completely unseen. This could cover all areas of LatentEye
 - Creating an installer and maybe executables.
@@ -183,13 +196,10 @@ My vision for future versions, This list is just the high level items, presented
 - Image editing. Image editing is a specialized task. This is a viewer, and there are many excellent image editing tools available. I won't recommend a specific one, as your requirements may differ from those of others.
 - Editing of the metadata. In a future version, will be the ability to clear image metadata, but this feature will focus solely on clearing, not editing.
 - EXIF data. - That's the realm of photography not Generative AI and doesn't align LatentEye's vision. It could be added someday, but it's unlikely.
-- Drag and drop. There are other apps that support that like [sd-prompt-reader](https://pypi.org/project/sd-prompt-reader/)
+- Drag and drop. There are other apps that support that like [sd-prompt-reader](https://pypi.org/project/sd-prompt-reader/) and [https://www.sdimage.info](https://www.sdimage.info)
 - Image Printing. It's highly improbable because of the necessary code and support. There are many better ways to print an image without adding this feature.
 
 Of course this list is subject to change but the first and last ones on the never do list are very unlikely to change.
-
-## Localization
-This is planned for a version at some future time and will take quite a bit of refactoring of the existing code to facilitate Localization.
 
 ## THANKS!
 _MANY_ Thanks go out to the following. Without them, LatentEye's would have never been opened.
@@ -208,4 +218,4 @@ A mention would be nice, however. :-)
 
 <a id="f1">1. metadata is not shown for .webp formatted files. [↩](#a1)</a>
 
-<a id="f2">2. see the docs for more info on this [↩](#a2)</a>
+<a id="f2">2. see the docs for more info on this. The TL;DR version is: but not in parent or child directories[↩](#a2)</a>
