@@ -7,11 +7,12 @@ import sys
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtGui import QScreen
 from src.main_window import MainWindow
+from src.latent_tools import Settings
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(module)s:%(lineno)s | %(message)s' )
     logger = logging.getLogger(__name__)
-    logger.debug('Starting')
+    logger.info(f'Starting {Settings.APPNAME} v{Settings.VERSION}')
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
