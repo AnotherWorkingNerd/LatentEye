@@ -40,7 +40,7 @@ Here are a few more [screenshots](./docs/screenshots.md) if interested.
 The Summary is below and the [CHANGELOG](./CHANGELOG.md) provides all the details.
 
 This added some desperately needed features. Directory refresh and a right click menu for the
-Thumbnails for some basic file management. Seee the screenshots or docs for more info.
+Thumbnails for some basic file management. See the screenshots or docs for more info.
 
 Most of the changes are invisible code refactoring, cleanup and hopefully improvements.
 
