@@ -12,6 +12,10 @@
 ## The eye that sees into generative art.
 </p>
 
+## Update March 2025
+Life unfolds in unexpected ways causing priorities to change. Therefore I've come to realize that it's time for me to step away from this project and take one of Life's other paths. Working on this was a lot of fun. Take care.
+- AnotherWorkingNerd.
+
 ## Introduction:
 LatentEye allows you to visually explore local AI-generated images and view their hidden metadata. This user-friendly desktop app offers features for viewing, managing metadata, and clipboard operations. Primarily for ComfyUI and Generative AI tools that produce images with Stable Diffusion compatible metadata but can view any of the supported file types.
 
