@@ -12,7 +12,7 @@
 ## The eye that sees into generative art.
 </p>
 
-## Update March 2025
+## Update March 2026
 Life unfolds in unexpected ways causing priorities to change. Therefore I've come to realize that it's time for me to step away from this project and take one of Life's other paths. Working on this was a lot of fun. Take care.
 - AnotherWorkingNerd.
 
